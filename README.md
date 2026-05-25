@@ -29,7 +29,7 @@ A single-page movie search app built with Next.js 16, TypeScript, and Tailwind C
 
 ### 2. Set up environment variables
 
-Create a `.env.local` file in the `movie-explorer/` directory:
+Create a `.env.local` file inside the `movie-explorer/movie-explorer/` directory (next to `package.json`):
 
 ```
 TMDB_KEY=your_jwt_token_here
