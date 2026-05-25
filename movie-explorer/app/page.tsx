@@ -15,6 +15,7 @@ export default function Home() {
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
 		setQuery(search);
+		setSelectedId(null);
 	}
 
 	return (
