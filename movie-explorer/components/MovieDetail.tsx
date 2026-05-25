@@ -14,14 +14,14 @@ function RatingInput({ value, onChange }: { value: number | null; onChange: (n: 
 	return (
 		<input
 			type="number"
-			min={0}
+			min={1}
 			max={5}
 			value={value ?? ""}
 			onChange={(e) => {
 				const n = Number(e.target.value);
-				if (n >= 0 && n <= 5) onChange(n);
+				if (n >= 1 && n <= 5) onChange(n);
 			}}
-			placeholder="0–5"
+			placeholder="1–5"
 			className="w-20 text-sm p-2 rounded border border-zinc-200 dark:border-zinc-700 bg-transparent focus:outline-none focus:ring-1 focus:ring-zinc-400"
 		/>
 	);
@@ -29,21 +29,23 @@ function RatingInput({ value, onChange }: { value: number | null; onChange: (n: 
 
 export default function MovieDetail({ id, syncKey, onFavoriteChange }: MovieDetailProps) {
 	const [movieDetails, setMovieDetails] = useState<MovieDetails | null>(null);
+	const [error, setError] = useState<string | null>(null);
 	const [isFav, setIsFav] = useState(false);
 	const [rating, setRating] = useState<number | null>(null);
 	const [note, setNote] = useState("");
 
 	useEffect(() => {
+		setError(null);
 		fetch(`/api/movie/${id}`)
 			.then(async (res) => {
-				if (!res.ok) throw new Error("Network response was not ok");
+				if (!res.ok) throw new Error("Failed to load movie details");
 				return res.json();
 			})
 			.then((data) => {
 				setMovieDetails(data);
 			})
 			.catch((err) => {
-				console.error("Failed to fetch movie details: " + err);
+				setError(err.message);
 			});
 
 		// load existing favorite state
@@ -89,16 +91,31 @@ export default function MovieDetail({ id, syncKey, onFavoriteChange }: MovieDeta
 		onFavoriteChange?.();
 	};
 
+	if (error) return <p className="p-4 text-red-500 text-sm">Error: {error}</p>;
 	if (!movieDetails) return <div className="p-4 text-zinc-500">Loading...</div>;
 
 	return (
 		<div className="flex flex-col gap-4 p-2">
-			<h2 className="text-xl font-semibold">{movieDetails.original_title}</h2>
-			<ul className="text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
-				<li>Release: {movieDetails.release_date}</li>
-				<li>Rating: {movieDetails.vote_average?.toFixed(1)}</li>
-				<li>Runtime: {movieDetails.runtime} min</li>
-			</ul>
+			<div className="flex gap-4">
+				{movieDetails.poster_path ? (
+					// eslint-disable-next-line @next/next/no-img-element
+					<img
+						src={`https://image.tmdb.org/t/p/w185${movieDetails.poster_path}`}
+						alt={movieDetails.original_title}
+						className="w-24 rounded shrink-0 self-start"
+					/>
+				) : (
+					<div className="w-24 h-36 rounded bg-zinc-200 dark:bg-zinc-800 shrink-0" />
+				)}
+				<div className="flex flex-col gap-1">
+					<h2 className="text-xl font-semibold">{movieDetails.original_title}</h2>
+					<ul className="text-sm text-zinc-600 dark:text-zinc-400 space-y-1 mt-1">
+						<li>Release: {movieDetails.release_date}</li>
+						<li>Rating: {movieDetails.vote_average?.toFixed(1)}</li>
+						<li>Runtime: {movieDetails.runtime} min</li>
+					</ul>
+				</div>
+			</div>
 			<p className="text-sm leading-relaxed">{movieDetails.overview}</p>
 
 			<hr className="border-zinc-200 dark:border-zinc-800" />
