@@ -2,6 +2,7 @@
 
 import MovieList from "@/components/MovieList";
 import MovieDetail from "@/components/MovieDetail";
+import FavoriteList from "@/components/FavoriteList";
 import { useState } from "react";
 
 export default function Home() {
@@ -9,6 +10,7 @@ export default function Home() {
 	const [query, setQuery] = useState("");
 	// navgivate to detail search view
 	const [selectedId, setSelectedId] = useState<number | null>(null);
+	const [favKey, setFavKey] = useState(0);
 
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
@@ -40,13 +42,15 @@ export default function Home() {
 								>
 									Back
 								</button>
-								<MovieDetail id={selectedId} />
+								<MovieDetail id={selectedId} onFavoriteChange={() => setFavKey(k => k + 1)} />
 							</div>
 						) : (
 							<MovieList query={query} action={setSelectedId} />
 						)}
 					</div>
-					<div className="basis-1/2 min-w-0">view2</div>
+					<div className="basis-1/2 min-w-0">
+							<FavoriteList refreshKey={favKey} />
+						</div>
 				</div>
 			</main>
 		</div>
