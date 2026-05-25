@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { type Favorite, getFavorites, removeFavorite } from "@/lib/favorites";
 
 
@@ -34,20 +34,17 @@ function FavoriteCard({ fav, onRemove }: { fav: Favorite; onRemove: () => void }
 	);
 }
 
-export default function FavoriteList({ refreshKey }: { refreshKey?: number }) {
-	const [favorites, setFavorites] = useState<Favorite[]>(() => getFavorites());
+export default function FavoriteList({ refreshKey, onFavoriteChange }: { refreshKey?: number; onFavoriteChange?: () => void }) {
+	const [favorites, setFavorites] = useState<Favorite[]>([]);
 
-	// re-read localStorage when parent signals a change
-	if (refreshKey !== undefined) {
-		const fresh = getFavorites();
-		if (JSON.stringify(fresh) !== JSON.stringify(favorites)) {
-			setFavorites(fresh);
-		}
-	}
+	useEffect(() => {
+		setFavorites(getFavorites());
+	}, [refreshKey]);
 
 	const handleRemove = (movieId: number) => {
 		removeFavorite(movieId);
 		setFavorites(getFavorites());
+		onFavoriteChange?.();
 	};
 
 	return (

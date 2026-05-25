@@ -15,6 +15,7 @@ export type Favorite = {
 const KEY = "favorites";
 
 export function getFavorites(): Favorite[] {
+	if (typeof window === "undefined") return [];
 	return JSON.parse(localStorage.getItem(KEY) || "[]") as Favorite[];
 }
 

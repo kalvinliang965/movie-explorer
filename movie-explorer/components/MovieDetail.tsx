@@ -6,6 +6,7 @@ import { getFavorites, hasFavorite, addFavorite, removeFavorite, updateFavorites
 
 type MovieDetailProps = {
 	id: number;
+	syncKey?: number;
 	onFavoriteChange?: () => void;
 }
 
@@ -26,7 +27,7 @@ function RatingInput({ value, onChange }: { value: number | null; onChange: (n: 
 	);
 }
 
-export default function MovieDetail({ id, onFavoriteChange }: MovieDetailProps) {
+export default function MovieDetail({ id, syncKey, onFavoriteChange }: MovieDetailProps) {
 	const [movieDetails, setMovieDetails] = useState<MovieDetails | null>(null);
 	const [isFav, setIsFav] = useState(false);
 	const [rating, setRating] = useState<number | null>(null);
@@ -50,7 +51,7 @@ export default function MovieDetail({ id, onFavoriteChange }: MovieDetailProps) 
 		setIsFav(hasFavorite(id));
 		setRating(existing?.rating ?? null);
 		setNote(existing?.note ?? "");
-	}, [id]);
+	}, [id, syncKey]);
 
 	const handleAddFavorite = () => {
 		if (!movieDetails) return;

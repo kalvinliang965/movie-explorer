@@ -42,14 +42,14 @@ export default function Home() {
 								>
 									Back
 								</button>
-								<MovieDetail id={selectedId} onFavoriteChange={() => setFavKey(k => k + 1)} />
+								<MovieDetail id={selectedId} syncKey={favKey} onFavoriteChange={() => setFavKey(k => k + 1)} />
 							</div>
 						) : (
 							<MovieList query={query} action={setSelectedId} />
 						)}
 					</div>
 					<div className="basis-1/2 min-w-0">
-							<FavoriteList refreshKey={favKey} />
+							<FavoriteList refreshKey={favKey} onFavoriteChange={() => setFavKey(k => k + 1)} />
 						</div>
 				</div>
 			</main>
