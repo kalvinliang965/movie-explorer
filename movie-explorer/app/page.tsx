@@ -1,11 +1,14 @@
 "use client"
 
-import Movie from "@/app/movie/page";
+import MovieList from "@/components/MovieList";
+import MovieDetail from "@/components/MovieDetail";
 import { useState } from "react";
 
 export default function Home() {
 	const [search, setSearch] = useState("");
 	const [query, setQuery] = useState("");
+	// navgivate to detail search view
+	const [selectedId, setSelectedId] = useState<number | null>(null);
 
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
@@ -29,7 +32,19 @@ export default function Home() {
 				</div>
 				<div className="flex flex-row flex-1 gap-6">
 					<div className="basis-1/2 min-w-0">
-						<Movie query={query} />
+						{selectedId !== null ? (
+							<div>
+								<button
+									className="text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 mb-4"
+									onClick={() => setSelectedId(null)}
+								>
+									Back
+								</button>
+								<MovieDetail id={selectedId} />
+							</div>
+						) : (
+							<MovieList query={query} action={setSelectedId} />
+						)}
 					</div>
 					<div className="basis-1/2 min-w-0">view2</div>
 				</div>
